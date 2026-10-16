@@ -1,0 +1,1986 @@
+<!doctype html>
+<html lang="uz" class="h-full bg-slate-50">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Universal Shop - Internet Do'kon</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts Inter -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#eff6ff",
+                100: "#dbeafe",
+                500: "#3b82f6",
+                600: "#2563eb",
+                700: "#1d4ed8",
+                900: "#1e3a8a",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body
+    class="h-full flex flex-col font-sans text-slate-800 antialiased bg-slate-50 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-200"
+  >
+    <!-- TOP ANNOUNCEMENT BAR -->
+    <div
+      id="botAlertBar"
+      class="bg-amber-500 text-white text-xs py-1.5 px-4 text-center font-medium hidden"
+    >
+      <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+      <span data-i18n="bot_alert_msg"
+        >Telegram Bot Token yoki Chat ID sozlanmagan!</span
+      >
+      <button
+        onclick="openSettingsModal()"
+        class="underline font-bold hover:text-amber-100"
+        data-i18n="fix_settings"
+      >
+        Sozlamalarni to'g'rilang</button
+      >.
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <header
+      class="sticky top-0 z-30 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-sm transition-colors"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo & View Mode Selector -->
+          <div class="flex items-center gap-4">
+            <a
+              href="#"
+              onclick="switchTab('customer')"
+              class="flex items-center gap-2 text-xl font-extrabold text-brand-600 dark:text-brand-500 tracking-tight"
+            >
+              <div
+                class="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-500/20"
+              >
+                <i class="fa-solid fa-bag-shopping"></i>
+              </div>
+              <span
+                >Universal<span class="text-slate-800 dark:text-white"
+                  >Shop</span
+                ></span
+              >
+            </a>
+
+            <!-- Interface Switcher Tabs -->
+            <div
+              class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-700 p-1 rounded-xl ml-4"
+            >
+              <button
+                id="navTabCustomer"
+                onclick="switchTab('customer')"
+                class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm"
+              >
+                <i class="fa-solid fa-store mr-1.5"></i>
+                <span data-i18n="tab_shop">Do'kon (Mijoz)</span>
+              </button>
+              <button
+                id="navTabAdmin"
+                onclick="switchTab('admin')"
+                class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all duration-200"
+              >
+                <i class="fa-solid fa-user-shield mr-1.5"></i>
+                <span data-i18n="tab_admin">Admin Panel</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Action Buttons -->
+          <div class="flex items-center gap-2 sm:gap-3">
+            <!-- Language Selector Switcher -->
+            <select
+              id="langSelector"
+              onchange="changeLanguage(this.value)"
+              class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold px-2 py-1.5 rounded-xl border-0 focus:ring-2 focus:ring-brand-500 cursor-pointer"
+            >
+              <option value="uz">🇺🇿 UZ</option>
+              <option value="ru">🇷🇺 RU</option>
+              <option value="en">🇬🇧 EN</option>
+            </select>
+
+            <button
+              onclick="toggleMobileSearch()"
+              class="sm:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg"
+            >
+              <i class="fa-solid fa-magnifying-glass text-lg"></i>
+            </button>
+
+            <button
+              onclick="openSettingsModal()"
+              class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl relative transition-colors"
+              title="Telegram Bot Sozlamalari"
+            >
+              <i
+                class="fa-solid fa-paper-plane text-brand-600 dark:text-brand-400 text-lg"
+              ></i>
+              <span
+                id="botStatusDot"
+                class="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-800"
+              ></span>
+            </button>
+
+            <button
+              onclick="toggleDarkMode()"
+              class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors"
+            >
+              <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+            </button>
+
+            <button
+              id="cartHeaderBtn"
+              onclick="toggleCartDrawer()"
+              class="relative bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl flex items-center gap-2 font-medium shadow-md shadow-brand-600/20 transition-all transform active:scale-95"
+            >
+              <i class="fa-solid fa-cart-shopping"></i>
+              <span class="hidden sm:inline text-sm" data-i18n="cart"
+                >Savat</span
+              >
+              <span
+                id="cartBadge"
+                class="bg-white text-brand-700 text-xs font-extrabold px-2 py-0.5 rounded-full min-w-[20px] text-center"
+                >0</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile View Switcher -->
+      <div
+        class="sm:hidden border-t border-slate-200 dark:border-slate-700 px-4 py-2 flex items-center justify-between gap-2 bg-slate-50 dark:bg-slate-800/50"
+      >
+        <div
+          class="flex items-center bg-slate-200 dark:bg-slate-700 p-0.5 rounded-lg w-full"
+        >
+          <button
+            id="mobileNavCustomer"
+            onclick="switchTab('customer')"
+            class="flex-1 py-1 rounded-md text-xs font-semibold text-center bg-white dark:bg-slate-800 text-brand-600 shadow-sm"
+            data-i18n="mobile_shop"
+          >
+            Mijoz Oynasi
+          </button>
+          <button
+            id="mobileNavAdmin"
+            onclick="switchTab('admin')"
+            class="flex-1 py-1 rounded-md text-xs font-semibold text-center text-slate-600 dark:text-slate-300"
+            data-i18n="mobile_admin"
+          >
+            Admin Panel
+          </button>
+        </div>
+      </div>
+
+      <!-- Search Bar (Mobile Dropdown) -->
+      <div
+        id="mobileSearchBox"
+        class="hidden sm:hidden border-t border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-800"
+      >
+        <div class="relative">
+          <i
+            class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400"
+          ></i>
+          <input
+            type="text"
+            id="mobileSearchInput"
+            oninput="handleSearch(this.value)"
+            data-i18n-placeholder="search_ph"
+            placeholder="Mahsulotlarni izlash..."
+            class="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500"
+          />
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT WRAPPER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <!-- CUSTOMER VIEW -->
+      <section id="customerView" class="space-y-6">
+        <!-- Hero Banner -->
+        <div
+          class="relative rounded-3xl bg-gradient-to-r from-brand-600 to-indigo-700 text-white p-6 sm:p-10 overflow-hidden shadow-xl"
+        >
+          <div
+            class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"
+          ></div>
+          <div class="relative z-10 max-w-2xl">
+            <span
+              class="bg-white/20 backdrop-blur-md text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-3"
+              data-i18n="hero_badge"
+              >Eng Sara Mahsulotlar</span
+            >
+            <h1
+              class="text-2xl sm:text-4xl font-black leading-tight tracking-tight mb-3"
+              data-i18n="hero_title"
+            >
+              Universal Shop bilan qulay va tezkor xarid qiling!
+            </h1>
+            <p
+              class="text-brand-100 text-sm sm:text-base mb-6"
+              data-i18n="hero_desc"
+            >
+              Buyurtmangiz to'g'ridan-to'g'ri Telegram botingizga yuboriladi va
+              tezda yetkazib beriladi.
+            </p>
+
+            <div
+              class="hidden sm:flex items-center bg-white/10 backdrop-blur-md p-1.5 rounded-2xl border border-white/20 max-w-lg"
+            >
+              <i class="fa-solid fa-magnifying-glass ml-3 text-brand-200"></i>
+              <input
+                type="text"
+                id="desktopSearchInput"
+                oninput="handleSearch(this.value)"
+                data-i18n-placeholder="hero_search_ph"
+                placeholder="Qanday mahsulot izlayapsiz?..."
+                class="bg-transparent border-0 text-white placeholder-brand-200 text-sm px-3 py-2 w-full focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div
+          class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none"
+          id="categoryContainer"
+        ></div>
+
+        <!-- Header Grid -->
+        <div class="flex items-center justify-between pt-2">
+          <h2
+            class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2"
+          >
+            <span data-i18n="catalog_title">Mahsulotlar Katalogi</span>
+            <span
+              id="productCountBadge"
+              class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold px-2.5 py-0.5 rounded-full"
+              >0</span
+            >
+          </h2>
+          <select
+            id="sortSelect"
+            onchange="handleSort(this.value)"
+            class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand-500"
+          >
+            <option value="default" data-i18n="sort_default">
+              Saralash: Standart
+            </option>
+            <option value="price-low" data-i18n="sort_low">
+              Narx: Arzonroq
+            </option>
+            <option value="price-high" data-i18n="sort_high">
+              Narx: Qimmatroq
+            </option>
+            <option value="name" data-i18n="sort_name">Nomi bo'yicha</option>
+          </select>
+        </div>
+
+        <!-- Product Grid -->
+        <div
+          id="productGrid"
+          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+        ></div>
+
+        <!-- Empty State -->
+        <div
+          id="noProductsFound"
+          class="hidden text-center py-16 bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 p-8"
+        >
+          <div
+            class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-2xl"
+          >
+            <i class="fa-solid fa-box-open"></i>
+          </div>
+          <h3
+            class="text-lg font-bold text-slate-800 dark:text-white mb-1"
+            data-i18n="not_found_title"
+          >
+            Mahsulot topilmadi
+          </h3>
+          <p class="text-slate-500 text-sm mb-4" data-i18n="not_found_desc">
+            Qidiruv so'rovingizga mos keladigan hech qanday mahsulot yo'q.
+          </p>
+          <button
+            onclick="resetFilters()"
+            class="text-xs font-semibold bg-brand-50 text-brand-600 dark:bg-slate-700 dark:text-brand-400 px-4 py-2 rounded-xl"
+            data-i18n="show_all"
+          >
+            Barcha mahsulotlarni ko'rsatish
+          </button>
+        </div>
+      </section>
+
+      <!-- ADMIN VIEW -->
+      <section id="adminView" class="hidden space-y-6">
+        <!-- PIN Code Modal -->
+        <div
+          id="adminPinModal"
+          class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4"
+        >
+          <div
+            class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-700 text-center"
+          >
+            <div
+              class="w-16 h-16 bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-md"
+            >
+              <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2
+              class="text-2xl font-bold text-slate-800 dark:text-white mb-2"
+              data-i18n="admin_login"
+            >
+              Admin Kirish
+            </h2>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">
+              <span data-i18n="pin_info"
+                >Panelga kirish uchun PIN kodni kiriting. (Standart:</span
+              >
+              <strong class="text-brand-600">1234</strong>)
+            </p>
+
+            <form onsubmit="verifyAdminPin(event)" class="space-y-4">
+              <input
+                type="password"
+                id="adminPinInput"
+                maxlength="6"
+                placeholder="PIN"
+                class="w-full text-center text-2xl tracking-widest py-3 rounded-2xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              />
+              <p
+                id="pinErrorMsg"
+                class="text-red-500 text-xs hidden"
+                data-i18n="pin_error"
+              >
+                PIN kod noto'g'ri!
+              </p>
+              <div class="flex gap-3">
+                <button
+                  type="button"
+                  onclick="switchTab('customer')"
+                  class="w-1/2 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+                  data-i18n="back"
+                >
+                  Orqaga
+                </button>
+                <button
+                  type="submit"
+                  class="w-1/2 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-lg shadow-brand-600/30 transition"
+                  data-i18n="login"
+                >
+                  Kirish
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Admin Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div
+            class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4"
+          >
+            <div
+              class="p-3.5 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400 rounded-xl"
+            >
+              <i class="fa-solid fa-box text-xl"></i>
+            </div>
+            <div>
+              <p
+                class="text-xs font-medium text-slate-500 dark:text-slate-400"
+                data-i18n="stat_products"
+              >
+                Jami Mahsulotlar
+              </p>
+              <h3
+                id="statTotalProducts"
+                class="text-2xl font-bold text-slate-800 dark:text-white"
+              >
+                0
+              </h3>
+            </div>
+          </div>
+          <div
+            class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4"
+          >
+            <div
+              class="p-3.5 bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400 rounded-xl"
+            >
+              <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+            </div>
+            <div>
+              <p
+                class="text-xs font-medium text-slate-500 dark:text-slate-400"
+                data-i18n="stat_new_orders"
+              >
+                Yangi Buyurtmalar
+              </p>
+              <h3
+                id="statNewOrders"
+                class="text-2xl font-bold text-amber-600 dark:text-amber-400"
+              >
+                0
+              </h3>
+            </div>
+          </div>
+          <div
+            class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4"
+          >
+            <div
+              class="p-3.5 bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400 rounded-xl"
+            >
+              <i class="fa-solid fa-sack-dollar text-xl"></i>
+            </div>
+            <div>
+              <p
+                class="text-xs font-medium text-slate-500 dark:text-slate-400"
+                data-i18n="stat_revenue"
+              >
+                Jami Savdolar
+              </p>
+              <h3
+                id="statTotalOrders"
+                class="text-2xl font-bold text-emerald-600 dark:text-emerald-400"
+              >
+                0
+              </h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Sub-tabs -->
+        <div class="flex border-b border-slate-200 dark:border-slate-700">
+          <button
+            id="adminTabOrdersBtn"
+            onclick="switchAdminSubTab('orders')"
+            class="py-3 px-6 text-sm font-bold border-b-2 border-brand-600 text-brand-600 dark:text-brand-400"
+          >
+            <i class="fa-solid fa-list-check mr-2"></i>
+            <span data-i18n="orders_control">Buyurtmalar Nazorati</span>
+          </button>
+          <button
+            id="adminTabProductsBtn"
+            onclick="switchAdminSubTab('products')"
+            class="py-3 px-6 text-sm font-bold border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+          >
+            <i class="fa-solid fa-boxes-stacked mr-2"></i>
+            <span data-i18n="products_control">Mahsulotlarni Boshqarish</span>
+          </button>
+        </div>
+
+        <!-- Orders Management -->
+        <div id="adminOrdersSection" class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h3
+              class="text-lg font-bold text-slate-800 dark:text-white"
+              data-i18n="incoming_orders"
+            >
+              Kelib tushgan buyurtmalar
+            </h3>
+            <button
+              onclick="clearAllOrders()"
+              class="text-xs text-red-600 dark:text-red-400 hover:underline"
+            >
+              <i class="fa-solid fa-trash mr-1"></i>
+              <span data-i18n="clear_all_orders">Barchasini o'chirish</span>
+            </button>
+          </div>
+          <div id="adminOrdersList" class="space-y-4"></div>
+          <div
+            id="noOrdersMsg"
+            class="hidden text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700"
+          >
+            <i
+              class="fa-solid fa-inbox text-4xl text-slate-300 dark:text-slate-600 mb-2"
+            ></i>
+            <p
+              class="text-slate-500 dark:text-slate-400 text-sm"
+              data-i18n="no_orders"
+            >
+              Hozircha buyurtmalar mavjud emas.
+            </p>
+          </div>
+        </div>
+
+        <!-- Products Management -->
+        <div id="adminProductsSection" class="hidden space-y-6">
+          <div class="flex justify-between items-center">
+            <h3
+              class="text-lg font-bold text-slate-800 dark:text-white"
+              data-i18n="shop_products"
+            >
+              Do'kon Mahsulotlari
+            </h3>
+            <button
+              onclick="openProductModal()"
+              class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-md flex items-center gap-2"
+            >
+              <i class="fa-solid fa-plus"></i>
+              <span data-i18n="add_product_btn">Yangi Mahsulot Qo'shish</span>
+            </button>
+          </div>
+
+          <div
+            class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm"
+          >
+            <div class="overflow-x-auto">
+              <table
+                class="w-full text-left text-sm text-slate-600 dark:text-slate-300"
+              >
+                <thead
+                  class="bg-slate-50 dark:bg-slate-700/50 text-slate-700 dark:text-slate-200 uppercase text-xs"
+                >
+                  <tr>
+                    <th class="p-4" data-i18n="th_product">Mahsulot</th>
+                    <th class="p-4" data-i18n="th_category">Kategoriya</th>
+                    <th class="p-4" data-i18n="th_price">Narxi</th>
+                    <th class="p-4" data-i18n="th_stock">Omborda</th>
+                    <th class="p-4 text-right" data-i18n="th_actions">
+                      Amallar
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="adminProductsTable"
+                  class="divide-y divide-slate-100 dark:divide-slate-700"
+                ></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- DRAWERS & MODALS -->
+
+    <!-- Cart Drawer -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+      <div
+        class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
+        onclick="toggleCartDrawer()"
+      ></div>
+      <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+        <div
+          class="w-screen max-w-md bg-white dark:bg-slate-800 shadow-2xl flex flex-col justify-between"
+        >
+          <div
+            class="p-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between"
+          >
+            <div class="flex items-center gap-2 text-slate-800 dark:text-white">
+              <i class="fa-solid fa-cart-shopping text-brand-600 text-xl"></i>
+              <h2 class="text-xl font-bold" data-i18n="cart_title">
+                Xarid Savatingiz
+              </h2>
+            </div>
+            <button
+              onclick="toggleCartDrawer()"
+              class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg"
+            >
+              <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+          </div>
+
+          <div
+            id="cartItemsContainer"
+            class="p-6 flex-1 overflow-y-auto space-y-4"
+          ></div>
+
+          <div
+            id="emptyCartView"
+            class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center"
+          >
+            <div
+              class="w-20 h-20 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center text-slate-400 text-3xl mb-4"
+            >
+              <i class="fa-solid fa-basket-shopping"></i>
+            </div>
+            <h3
+              class="text-lg font-bold text-slate-800 dark:text-white mb-1"
+              data-i18n="empty_cart"
+            >
+              Savatingiz bo'sh
+            </h3>
+            <p class="text-slate-500 text-sm mb-6" data-i18n="empty_cart_desc">
+              Katalogdan mahsulotlarni tanlang va savatga qo'shing.
+            </p>
+            <button
+              onclick="toggleCartDrawer()"
+              class="bg-brand-600 text-white text-sm font-bold px-6 py-2.5 rounded-xl"
+              data-i18n="start_shopping"
+            >
+              Xaridni boshlash
+            </button>
+          </div>
+
+          <div
+            id="cartFooter"
+            class="p-6 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 space-y-4"
+          >
+            <div class="space-y-1.5 text-sm">
+              <div
+                class="flex justify-between text-slate-500 dark:text-slate-400"
+              >
+                <span data-i18n="total_items">Jami mahsulotlar:</span>
+                <span id="cartTotalItemsCount">0</span>
+              </div>
+              <div
+                class="flex justify-between text-lg font-bold text-slate-800 dark:text-white pt-2 border-t border-slate-200 dark:border-slate-700"
+              >
+                <span data-i18n="total_sum">Umumiy summa:</span>
+                <span
+                  id="cartTotalPrice"
+                  class="text-brand-600 dark:text-brand-400"
+                  >0</span
+                >
+              </div>
+            </div>
+
+            <button
+              onclick="openCheckoutModal()"
+              class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2 text-base transition"
+            >
+              <i class="fa-solid fa-paper-plane"></i>
+              <span data-i18n="checkout_btn">Buyurtmani Rasmiylashtirish</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div
+      id="checkoutModal"
+      class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden"
+    >
+      <div
+        class="bg-white dark:bg-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto"
+      >
+        <div
+          class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-700 mb-6"
+        >
+          <h2
+            class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2"
+          >
+            <i class="fa-solid fa-truck-fast text-brand-600"></i>
+            <span data-i18n="checkout_title">Buyurtma Berish</span>
+          </h2>
+          <button
+            onclick="closeCheckoutModal()"
+            class="text-slate-400 hover:text-slate-600"
+          >
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+
+        <form onsubmit="handleCheckoutSubmit(event)" class="space-y-4">
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+              data-i18n="cust_name"
+              >Ismingiz va Familiyangiz *</label
+            >
+            <input
+              type="text"
+              id="custName"
+              required
+              placeholder="Ali Valiyev"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+              data-i18n="cust_phone"
+              >Telefon Raqamingiz *</label
+            >
+            <input
+              type="tel"
+              id="custPhone"
+              required
+              placeholder="+998 90 123 45 67"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+              data-i18n="cust_address"
+              >Yetkazib Berish Manzili *</label
+            >
+            <textarea
+              id="custAddress"
+              required
+              rows="2"
+              placeholder="..."
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none"
+            ></textarea>
+          </div>
+
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+              data-i18n="cust_payment"
+              >To'lov Usuli</label
+            >
+            <select
+              id="custPayment"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none"
+            >
+              <option value="Naqd / Qabul qilishda" data-i18n="pay_cash">
+                Naqd pul yoki karta orqali yetkazilganda
+              </option>
+              <option value="Click / Payme" data-i18n="pay_online">
+                Click / Payme orqali onlayn o'tkazma
+              </option>
+            </select>
+          </div>
+
+          <div
+            class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl space-y-2 text-xs"
+          >
+            <div class="flex justify-between font-medium">
+              <span
+                class="text-slate-500 dark:text-slate-400"
+                data-i18n="order_sum"
+                >Buyurtma summasi:</span
+              >
+              <span
+                id="checkoutTotalSum"
+                class="font-bold text-slate-800 dark:text-white"
+                >0</span
+              >
+            </div>
+            <div
+              class="flex justify-between text-emerald-600 dark:text-emerald-400 font-semibold"
+            >
+              <span data-i18n="delivery">Yetkazib berish:</span>
+              <span data-i18n="free">Bepul</span>
+            </div>
+          </div>
+
+          <div class="pt-2 flex gap-3">
+            <button
+              type="button"
+              onclick="closeCheckoutModal()"
+              class="w-1/2 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-sm"
+              data-i18n="cancel"
+            >
+              Bekor qilish
+            </button>
+            <button
+              type="submit"
+              id="submitOrderBtn"
+              class="w-1/2 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 text-sm flex items-center justify-center gap-2"
+            >
+              <i class="fa-solid fa-check"></i>
+              <span data-i18n="confirm">Tasdiqlash</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div
+      id="productModal"
+      class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden"
+    >
+      <div
+        class="bg-white dark:bg-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto"
+      >
+        <div
+          class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-700 mb-4"
+        >
+          <h2
+            id="productModalTitle"
+            class="text-xl font-bold text-slate-800 dark:text-white"
+            data-i18n="modal_add_title"
+          >
+            Yangi Mahsulot Qo'shish
+          </h2>
+          <button
+            onclick="closeProductModal()"
+            class="text-slate-400 hover:text-slate-600"
+          >
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+
+        <form onsubmit="handleProductSubmit(event)" class="space-y-4">
+          <input type="hidden" id="prodEditId" />
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+              data-i18n="p_name"
+              >Mahsulot Nomi *</label
+            >
+            <input
+              type="text"
+              id="prodTitle"
+              required
+              placeholder="..."
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:outline-none"
+            />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label
+                class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+                data-i18n="p_price"
+                >Narxi *</label
+              >
+              <input
+                type="number"
+                id="prodPrice"
+                required
+                placeholder="100000"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:outline-none"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+                data-i18n="p_stock"
+                >Ombor soni *</label
+              >
+              <input
+                type="number"
+                id="prodStock"
+                required
+                placeholder="10"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:outline-none"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+              data-i18n="p_cat"
+              >Kategoriya *</label
+            >
+            <input
+              type="text"
+              id="prodCategory"
+              required
+              placeholder="..."
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:outline-none"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+              data-i18n="p_img"
+              >Rasm URL Havolasi</label
+            >
+            <input
+              type="url"
+              id="prodImage"
+              placeholder="https://..."
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:outline-none"
+            />
+          </div>
+          <div class="pt-2 flex gap-3">
+            <button
+              type="button"
+              onclick="closeProductModal()"
+              class="w-1/2 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-sm"
+              data-i18n="cancel"
+            >
+              Bekor qilish
+            </button>
+            <button
+              type="submit"
+              class="w-1/2 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 text-sm"
+              data-i18n="save"
+            >
+              Saqlash
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Telegram Settings Modal -->
+    <div
+      id="settingsModal"
+      class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden"
+    >
+      <div
+        class="bg-white dark:bg-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700"
+      >
+        <div
+          class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-700 mb-4"
+        >
+          <h2
+            class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2"
+          >
+            <i class="fa-solid fa-paper-plane text-brand-600"></i>
+            <span data-i18n="tg_title">Telegram Bot Sozlamalari</span>
+          </h2>
+          <button
+            onclick="closeSettingsModal()"
+            class="text-slate-400 hover:text-slate-600"
+          >
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+
+        <form onsubmit="handleSettingsSave(event)" class="space-y-4">
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+              >Bot Token *</label
+            >
+            <input
+              type="text"
+              id="settingBotToken"
+              required
+              placeholder="123456789:ABCdef..."
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:outline-none"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1"
+              >Admin / Chat ID *</label
+            >
+            <input
+              type="text"
+              id="settingChatId"
+              required
+              placeholder="-10012345..."
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm focus:outline-none"
+            />
+          </div>
+
+          <div class="pt-2 flex gap-3">
+            <button
+              type="button"
+              onclick="closeSettingsModal()"
+              class="w-1/2 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-sm"
+              data-i18n="close"
+            >
+              Yopish
+            </button>
+            <button
+              type="submit"
+              class="w-1/2 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 text-sm"
+              data-i18n="save"
+            >
+              Saqlash
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- JAVASCRIPT & TRANSLATIONS -->
+    <script>
+      // Translations Dictionary
+      const translations = {
+        uz: {
+          tab_shop: "Do'kon (Mijoz)",
+          tab_admin: "Admin Panel",
+          mobile_shop: "Mijoz Oynasi",
+          mobile_admin: "Admin Panel",
+          cart: "Savat",
+          search_ph: "Mahsulotlarni izlash...",
+          hero_badge: "Eng Sara Mahsulotlar",
+          hero_title: "Universal Shop bilan qulay va tezkor xarid qiling!",
+          hero_desc:
+            "Buyurtmangiz to'g'ridan-to'g'ri Telegram botingizga yuboriladi va tezda yetkazib beriladi.",
+          hero_search_ph: "Qanday mahsulot izlayapsiz?...",
+          catalog_title: "Mahsulotlar Katalogi",
+          sort_default: "Saralash: Standart",
+          sort_low: "Narx: Arzonroq",
+          sort_high: "Narx: Qimmatroq",
+          sort_name: "Nomi bo'yicha",
+          not_found_title: "Mahsulot topilmadi",
+          not_found_desc:
+            "Qidiruv so'rovingizga mos keladigan hech qanday mahsulot yo'q.",
+          show_all: "Barcha mahsulotlarni ko'rsatish",
+          admin_login: "Admin Kirish",
+          pin_info: "Panelga kirish uchun PIN kodni kiriting. (Standart:",
+          pin_error: "PIN kod noto'g'ri!",
+          back: "Orqaga",
+          login: "Kirish",
+          stat_products: "Jami Mahsulotlar",
+          stat_new_orders: "Yangi Buyurtmalar",
+          stat_revenue: "Jami Savdolar",
+          orders_control: "Buyurtmalar Nazorati",
+          products_control: "Mahsulotlarni Boshqarish",
+          incoming_orders: "Kelib tushgan buyurtmalar",
+          clear_all_orders: "Barchasini o'chirish",
+          no_orders: "Hozircha buyurtmalar mavjud emas.",
+          shop_products: "Do'kon Mahsulotlari",
+          add_product_btn: "Yangi Mahsulot Qo'shish",
+          th_product: "Mahsulot",
+          th_category: "Kategoriya",
+          th_price: "Narxi",
+          th_stock: "Omborda",
+          th_actions: "Amallar",
+          cart_title: "Xarid Savatingiz",
+          empty_cart: "Savatingiz bo'sh",
+          empty_cart_desc:
+            "Katalogdan mahsulotlarni tanlang va savatga qo'shing.",
+          start_shopping: "Xaridni boshlash",
+          total_items: "Jami mahsulotlar:",
+          total_sum: "Umumiy summa:",
+          checkout_btn: "Buyurtmani Rasmiylashtirish",
+          checkout_title: "Buyurtma Berish",
+          cust_name: "Ismingiz va Familiyangiz *",
+          cust_phone: "Telefon Raqamingiz *",
+          cust_address: "Yetkazib Berish Manzili *",
+          cust_payment: "To'lov Usuli",
+          pay_cash: "Naqd pul yoki karta orqali yetkazilganda",
+          pay_online: "Click / Payme orqali onlayn o'tkazma",
+          order_sum: "Buyurtma summasi:",
+          delivery: "Yetkazib berish:",
+          free: "Bepul",
+          cancel: "Bekor qilish",
+          confirm: "Tasdiqlash",
+          modal_add_title: "Yangi Mahsulot Qo'shish",
+          modal_edit_title: "Mahsulotni Tahrirlash",
+          p_name: "Mahsulot Nomi *",
+          p_price: "Narxi *",
+          p_stock: "Ombor soni *",
+          p_cat: "Kategoriya *",
+          p_img: "Rasm URL Havolasi",
+          save: "Saqlash",
+          close: "Yopish",
+          tg_title: "Telegram Bot Sozlamalari",
+          bot_alert_msg: "Telegram Bot Token yoki Chat ID sozlanmagan!",
+          fix_settings: "Sozlamalarni to'g'rilang",
+          stock_status: "Omborda:",
+          out_of_stock: "Qolmagan",
+          currency: "so'm",
+          all_cat: "Barchasi",
+        },
+        ru: {
+          tab_shop: "Магазин (Клиент)",
+          tab_admin: "Админ Панель",
+          mobile_shop: "Магазин",
+          mobile_admin: "Админка",
+          cart: "Корзина",
+          search_ph: "Поиск товаров...",
+          hero_badge: "Лучшие Товары",
+          hero_title: "Покупайте быстро и удобно с Universal Shop!",
+          hero_desc:
+            "Ваш заказ будет отправлен прямо в Telegram бот и доставлен оперативно.",
+          hero_search_ph: "Какой товар вы ищете?...",
+          catalog_title: "Каталог Товаров",
+          sort_default: "Сортировка: Стандарт",
+          sort_low: "Цена: Дешевле",
+          sort_high: "Цена: Дороже",
+          sort_name: "По названию",
+          not_found_title: "Товар не найден",
+          not_found_desc: "Нет товаров, соответствующих вашему запросу.",
+          show_all: "Показать все товары",
+          admin_login: "Вход для Админа",
+          pin_info: "Введите PIN-код для входа. (Стандарт:",
+          pin_error: "Неверный PIN-код!",
+          back: "Назад",
+          login: "Войти",
+          stat_products: "Всего Товаров",
+          stat_new_orders: "Новые Заказы",
+          stat_revenue: "Общие Продажи",
+          orders_control: "Контроль Заказов",
+          products_control: "Управление Товарами",
+          incoming_orders: "Поступившие заказы",
+          clear_all_orders: "Удалить все",
+          no_orders: "Заказов пока нет.",
+          shop_products: "Товары Магазина",
+          add_product_btn: "Добавить Товар",
+          th_product: "Товар",
+          th_category: "Категория",
+          th_price: "Цена",
+          th_stock: "На складе",
+          th_actions: "Действия",
+          cart_title: "Ваша Корзина",
+          empty_cart: "Корзина пуста",
+          empty_cart_desc:
+            "Выберите товары из каталога и добавьте их в корзину.",
+          start_shopping: "Начать покупки",
+          total_items: "Всего товаров:",
+          total_sum: "Общая сумма:",
+          checkout_btn: "Оформить Заказ",
+          checkout_title: "Оформление Заказа",
+          cust_name: "Ваше Имя и Фамилия *",
+          cust_phone: "Номер Телефона *",
+          cust_address: "Адрес Доставки *",
+          cust_payment: "Способ Оплаты",
+          pay_cash: "Наличными или картой при получении",
+          pay_online: "Онлайн перевод Click / Payme",
+          order_sum: "Сумма заказа:",
+          delivery: "Доставка:",
+          free: "Бесплатно",
+          cancel: "Отмена",
+          confirm: "Подтвердить",
+          modal_add_title: "Добавить Новый Товар",
+          modal_edit_title: "Редактировать Товар",
+          p_name: "Название Товара *",
+          p_price: "Цена *",
+          p_stock: "Кол-во на складе *",
+          p_cat: "Категория *",
+          p_img: "Ссылка на Изображение",
+          save: "Сохранить",
+          close: "Закрыть",
+          tg_title: "Настройки Telegram Бота",
+          bot_alert_msg: "Telegram Bot Token или Chat ID не настроены!",
+          fix_settings: "Исправить настройки",
+          stock_status: "В наличии:",
+          out_of_stock: "Нет в наличии",
+          currency: "сум",
+          all_cat: "Все",
+        },
+        en: {
+          tab_shop: "Shop (Customer)",
+          tab_admin: "Admin Panel",
+          mobile_shop: "Customer View",
+          mobile_admin: "Admin Panel",
+          cart: "Cart",
+          search_ph: "Search products...",
+          hero_badge: "Top Products",
+          hero_title: "Shop fast and conveniently with Universal Shop!",
+          hero_desc:
+            "Your order will be sent directly to your Telegram bot and delivered promptly.",
+          hero_search_ph: "What product are you looking for?...",
+          catalog_title: "Product Catalog",
+          sort_default: "Sort: Default",
+          sort_low: "Price: Low to High",
+          sort_high: "Price: High to Low",
+          sort_name: "By Name",
+          not_found_title: "No products found",
+          not_found_desc: "There are no products matching your search request.",
+          show_all: "Show all products",
+          admin_login: "Admin Login",
+          pin_info: "Enter PIN code to access panel. (Default:",
+          pin_error: "Incorrect PIN code!",
+          back: "Back",
+          login: "Login",
+          stat_products: "Total Products",
+          stat_new_orders: "New Orders",
+          stat_revenue: "Total Sales",
+          orders_control: "Order Management",
+          products_control: "Product Management",
+          incoming_orders: "Received Orders",
+          clear_all_orders: "Clear All",
+          no_orders: "No orders yet.",
+          shop_products: "Shop Products",
+          add_product_btn: "Add New Product",
+          th_product: "Product",
+          th_category: "Category",
+          th_price: "Price",
+          th_stock: "Stock",
+          th_actions: "Actions",
+          cart_title: "Shopping Cart",
+          empty_cart: "Your cart is empty",
+          empty_cart_desc:
+            "Select items from the catalog and add them to your cart.",
+          start_shopping: "Start Shopping",
+          total_items: "Total items:",
+          total_sum: "Total sum:",
+          checkout_btn: "Proceed to Checkout",
+          checkout_title: "Place Order",
+          cust_name: "Full Name *",
+          cust_phone: "Phone Number *",
+          cust_address: "Delivery Address *",
+          cust_payment: "Payment Method",
+          pay_cash: "Cash or Card on delivery",
+          pay_online: "Online transfer Click / Payme",
+          order_sum: "Order sum:",
+          delivery: "Delivery:",
+          free: "Free",
+          cancel: "Cancel",
+          confirm: "Confirm Order",
+          modal_add_title: "Add New Product",
+          modal_edit_title: "Edit Product",
+          p_name: "Product Name *",
+          p_price: "Price *",
+          p_stock: "Stock Count *",
+          p_cat: "Category *",
+          p_img: "Image URL",
+          save: "Save",
+          close: "Close",
+          tg_title: "Telegram Bot Settings",
+          bot_alert_msg: "Telegram Bot Token or Chat ID not configured!",
+          fix_settings: "Fix settings",
+          stock_status: "In stock:",
+          out_of_stock: "Out of stock",
+          currency: "UZS",
+          all_cat: "All",
+        },
+      };
+
+      let currentLang = localStorage.getItem("universal_lang") || "uz";
+
+      function changeLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem("universal_lang", lang);
+        document.getElementById("langSelector").value = lang;
+
+        // Translate static elements
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (translations[lang] && translations[lang][key]) {
+            el.innerText = translations[lang][key];
+          }
+        });
+
+        // Translate placeholders
+        document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+          const key = el.getAttribute("data-i18n-placeholder");
+          if (translations[lang] && translations[lang][key]) {
+            el.placeholder = translations[lang][key];
+          }
+        });
+
+        renderCustomerApp();
+        renderAdminPanel();
+      }
+
+      // App Data State
+      let products = JSON.parse(localStorage.getItem("universal_products")) || [
+        {
+          id: 1,
+          title: "iPhone 15 Pro Max",
+          price: 14500000,
+          stock: 12,
+          category: "Elektronika",
+          image:
+            "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500",
+        },
+        {
+          id: 2,
+          title: "MacBook Air M2",
+          price: 13200000,
+          stock: 5,
+          category: "Elektronika",
+          image:
+            "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500",
+        },
+        {
+          id: 3,
+          title: "Nike Air Max",
+          price: 850000,
+          stock: 20,
+          category: "Kiyim va Oyoq kiyim",
+          image:
+            "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
+        },
+      ];
+
+      let orders = JSON.parse(localStorage.getItem("universal_orders")) || [];
+      let cart = JSON.parse(localStorage.getItem("universal_cart")) || [];
+      let telegramConfig = JSON.parse(
+        localStorage.getItem("universal_telegram"),
+      ) || { token: "", chatId: "" };
+
+      let currentCategory = "Barchasi";
+      let searchQuery = "";
+      let currentSort = "default";
+      let isAdminLoggedIn = false;
+
+      window.onload = function () {
+        changeLanguage(currentLang);
+        checkTelegramConfigAlert();
+        updateCartBadge();
+        initDarkMode();
+      };
+
+      // Tab Switcher
+      function switchTab(tab) {
+        const customerView = document.getElementById("customerView");
+        const adminView = document.getElementById("adminView");
+        const navTabCustomer = document.getElementById("navTabCustomer");
+        const navTabAdmin = document.getElementById("navTabAdmin");
+        const mobileNavCustomer = document.getElementById("mobileNavCustomer");
+        const mobileNavAdmin = document.getElementById("mobileNavAdmin");
+
+        if (tab === "customer") {
+          customerView.classList.remove("hidden");
+          adminView.classList.add("hidden");
+
+          navTabCustomer.className =
+            "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm";
+          navTabAdmin.className =
+            "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all duration-200";
+
+          mobileNavCustomer.className =
+            "flex-1 py-1 rounded-md text-xs font-semibold text-center bg-white dark:bg-slate-800 text-brand-600 shadow-sm";
+          mobileNavAdmin.className =
+            "flex-1 py-1 rounded-md text-xs font-semibold text-center text-slate-600 dark:text-slate-300";
+
+          renderCustomerApp();
+        } else {
+          if (!isAdminLoggedIn) {
+            document.getElementById("adminPinModal").classList.remove("hidden");
+          } else {
+            renderAdminPanel();
+          }
+          customerView.classList.add("hidden");
+          adminView.classList.remove("hidden");
+
+          navTabAdmin.className =
+            "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm";
+          navTabCustomer.className =
+            "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all duration-200";
+
+          mobileNavAdmin.className =
+            "flex-1 py-1 rounded-md text-xs font-semibold text-center bg-white dark:bg-slate-800 text-brand-600 shadow-sm";
+          mobileNavCustomer.className =
+            "flex-1 py-1 rounded-md text-xs font-semibold text-center text-slate-600 dark:text-slate-300";
+        }
+      }
+
+      function verifyAdminPin(e) {
+        e.preventDefault();
+        const pin = document.getElementById("adminPinInput").value;
+        if (pin === "1214") {
+          isAdminLoggedIn = true;
+          document.getElementById("adminPinModal").classList.add("hidden");
+          document.getElementById("pinErrorMsg").classList.add("hidden");
+          document.getElementById("adminPinInput").value = "";
+          renderAdminPanel();
+        } else {
+          document.getElementById("pinErrorMsg").classList.remove("hidden");
+        }
+      }
+
+      // Customer Logic
+      function renderCustomerApp() {
+        renderCategories();
+        renderProducts();
+      }
+
+      function renderCategories() {
+        const container = document.getElementById("categoryContainer");
+        const categories = [
+          translations[currentLang].all_cat,
+          ...new Set(products.map((p) => p.category)),
+        ];
+
+        container.innerHTML = categories
+          .map(
+            (cat) => `
+                <button onclick="filterCategory('${cat}')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all ${currentCategory === cat ? "bg-brand-600 text-white shadow-md shadow-brand-600/30" : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100"}">
+                    ${cat}
+                </button>
+            `,
+          )
+          .join("");
+      }
+
+      function filterCategory(cat) {
+        currentCategory = cat;
+        renderCategories();
+        renderProducts();
+      }
+
+      function handleSearch(val) {
+        searchQuery = val.toLowerCase();
+        renderProducts();
+      }
+
+      function handleSort(val) {
+        currentSort = val;
+        renderProducts();
+      }
+
+      function resetFilters() {
+        searchQuery = "";
+        currentCategory = translations[currentLang].all_cat;
+        renderCategories();
+        renderProducts();
+      }
+
+      function renderProducts() {
+        const grid = document.getElementById("productGrid");
+        const noFound = document.getElementById("noProductsFound");
+        const countBadge = document.getElementById("productCountBadge");
+
+        let filtered = products.filter((p) => {
+          const matchCat =
+            currentCategory === translations[currentLang].all_cat ||
+            currentCategory === "Barchasi" ||
+            p.category === currentCategory;
+          const matchSearch =
+            p.title.toLowerCase().includes(searchQuery) ||
+            p.category.toLowerCase().includes(searchQuery);
+          return matchCat && matchSearch;
+        });
+
+        if (currentSort === "price-low")
+          filtered.sort((a, b) => a.price - b.price);
+        if (currentSort === "price-high")
+          filtered.sort((a, b) => b.price - a.price);
+        if (currentSort === "name")
+          filtered.sort((a, b) => a.title.localeCompare(b.title));
+
+        countBadge.innerText = filtered.length;
+
+        if (filtered.length === 0) {
+          grid.innerHTML = "";
+          noFound.classList.remove("hidden");
+          return;
+        }
+        noFound.classList.add("hidden");
+
+        const t = translations[currentLang];
+
+        grid.innerHTML = filtered
+          .map(
+            (p) => `
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-44 sm:h-52 bg-slate-100 dark:bg-slate-700 overflow-hidden">
+                            <img src="${p.image || "https://via.placeholder.com/300"}" alt="${p.title}" class="w-full h-full object-cover">
+                            <span class="absolute top-2.5 right-2.5 bg-slate-900/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full">${p.stock > 0 ? `${t.stock_status}${p.stock}` : t.out_of_stock}</span>
+                        </div>
+                        <div class="p-4 space-y-1">
+                            <span class="text-[10px] uppercase tracking-wider font-semibold text-brand-600 dark:text-brand-400">${p.category}</span>
+                            <h3 class="font-bold text-slate-800 dark:text-white text-sm line-clamp-2">${p.title}</h3>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 flex items-center justify-between">
+                        <span class="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">${p.price.toLocaleString()} ${t.currency}</span>
+                        <button onclick="addToCart(${p.id})" ${p.stock <= 0 ? "disabled" : ""} class="p-2.5 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white rounded-xl text-xs font-bold transition shadow-md shadow-brand-600/20">
+                            <i class="fa-solid fa-cart-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      // Cart Logic
+      function addToCart(productId) {
+        const product = products.find((p) => p.id === productId);
+        if (!product || product.stock <= 0)
+          return alert(translations[currentLang].out_of_stock);
+
+        const existing = cart.find((item) => item.id === productId);
+        if (existing) {
+          if (existing.qty < product.stock) {
+            existing.qty++;
+          } else {
+            return alert("Max quantity reached!");
+          }
+        } else {
+          cart.push({ ...product, qty: 1 });
+        }
+
+        saveCart();
+        updateCartBadge();
+        toggleCartDrawer();
+      }
+
+      function updateCartBadge() {
+        const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+        document.getElementById("cartBadge").innerText = totalCount;
+        localStorage.setItem("universal_cart", JSON.stringify(cart));
+      }
+
+      function saveCart() {
+        localStorage.setItem("universal_cart", JSON.stringify(cart));
+      }
+
+      function toggleCartDrawer() {
+        const drawer = document.getElementById("cartDrawer");
+        drawer.classList.toggle("hidden");
+        if (!drawer.classList.contains("hidden")) renderCartItems();
+      }
+
+      function renderCartItems() {
+        const container = document.getElementById("cartItemsContainer");
+        const emptyView = document.getElementById("emptyCartView");
+        const footer = document.getElementById("cartFooter");
+        const t = translations[currentLang];
+
+        if (cart.length === 0) {
+          container.innerHTML = "";
+          emptyView.classList.remove("hidden");
+          footer.classList.add("hidden");
+          return;
+        }
+
+        emptyView.classList.add("hidden");
+        footer.classList.remove("hidden");
+
+        let totalSum = 0;
+        let totalCount = 0;
+
+        container.innerHTML = cart
+          .map((item, index) => {
+            totalSum += item.price * item.qty;
+            totalCount += item.qty;
+            return `
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center gap-3 w-full">
+                        <img src="${item.image}" class="w-14 h-14 object-cover rounded-xl">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white line-clamp-1">${item.title}</h4>
+                            <p class="text-xs text-brand-600 dark:text-brand-400 font-semibold">${item.price.toLocaleString()} ${t.currency}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between w-full sm:w-auto gap-3">
+                        <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl p-1">
+                            <button onclick="changeQty(${index}, -1)" class="w-6 h-6 flex items-center justify-center font-bold text-xs">-</button>
+                            <span class="text-xs font-bold px-2">${item.qty}</span>
+                            <button onclick="changeQty(${index}, 1)" class="w-6 h-6 flex items-center justify-center font-bold text-xs">+</button>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 p-2"><i class="fa-solid fa-trash text-xs"></i></button>
+                    </div>
+                </div>`;
+          })
+          .join("");
+
+        document.getElementById("cartTotalItemsCount").innerText =
+          `${totalCount}`;
+        document.getElementById("cartTotalPrice").innerText =
+          `${totalSum.toLocaleString()} ${t.currency}`;
+      }
+
+      function changeQty(index, delta) {
+        cart[index].qty += delta;
+        if (cart[index].qty <= 0) {
+          cart.splice(index, 1);
+        }
+        saveCart();
+        updateCartBadge();
+        renderCartItems();
+      }
+
+      function removeFromCart(index) {
+        cart.splice(index, 1);
+        saveCart();
+        updateCartBadge();
+        renderCartItems();
+      }
+
+      // Checkout & Telegram Bot Integration
+      function openCheckoutModal() {
+        if (cart.length === 0)
+          return alert(translations[currentLang].empty_cart);
+        toggleCartDrawer();
+
+        let totalSum = cart.reduce(
+          (sum, item) => sum + item.price * item.qty,
+          0,
+        );
+        document.getElementById("checkoutTotalSum").innerText =
+          `${totalSum.toLocaleString()} ${translations[currentLang].currency}`;
+        document.getElementById("checkoutModal").classList.remove("hidden");
+      }
+
+      function closeCheckoutModal() {
+        document.getElementById("checkoutModal").classList.add("hidden");
+      }
+
+      async function handleCheckoutSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById("custName").value.trim();
+        const phone = document.getElementById("custPhone").value.trim();
+        const address = document.getElementById("custAddress").value.trim();
+        const payment = document.getElementById("custPayment").value;
+
+        const totalSum = cart.reduce(
+          (sum, item) => sum + item.price * item.qty,
+          0,
+        );
+
+        const newOrder = {
+          id: "ORD-" + Date.now().toString().slice(-6),
+          date: new Date().toLocaleString(),
+          customer: name,
+          phone: phone,
+          address: address,
+          payment: payment,
+          items: [...cart],
+          total: totalSum,
+          status: "Yangi",
+        };
+
+        orders.unshift(newOrder);
+        localStorage.setItem("universal_orders", JSON.stringify(orders));
+
+        // Send to Telegram
+        if (telegramConfig.token && telegramConfig.chatId) {
+          const itemListText = cart
+            .map(
+              (i) =>
+                `• ${i.title} (${i.qty} x ${i.price.toLocaleString()} so'm)`,
+            )
+            .join("\n");
+          const message =
+            `🛍️ *YANGI BUYURTMA!* (#${newOrder.id})\n\n` +
+            `👤 *Mijoz:* ${name}\n` +
+            `📞 *Tel:* ${phone}\n` +
+            `📍 *Manzil:* ${address}\n` +
+            `💳 *To'lov:* ${payment}\n\n` +
+            `📦 *Mahsulotlar:*\n${itemListText}\n\n` +
+            `💰 *Jami summa:* ${totalSum.toLocaleString()} so'm`;
+
+          try {
+            await fetch(
+              `https://api.telegram.org/bot${telegramConfig.token}/sendMessage`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  chat_id: telegramConfig.chatId,
+                  text: message,
+                  parse_mode: "Markdown",
+                }),
+              },
+            );
+          } catch (err) {
+            console.error("Telegram error:", err);
+          }
+        }
+
+        cart = [];
+        saveCart();
+        updateCartBadge();
+        closeCheckoutModal();
+        alert("Success / Muvaffaqiyatli!");
+      }
+
+      // Admin Panel Logic
+      function renderAdminPanel() {
+        const totalProd = products.length;
+        const newOrd = orders.filter((o) => o.status === "Yangi").length;
+        const totalRev = orders.reduce((sum, o) => sum + o.total, 0);
+
+        document.getElementById("statTotalProducts").innerText = totalProd;
+        document.getElementById("statNewOrders").innerText = newOrd;
+        document.getElementById("statTotalOrders").innerText =
+          `${totalRev.toLocaleString()} ${translations[currentLang].currency}`;
+
+        renderAdminOrders();
+        renderAdminProducts();
+      }
+
+      function switchAdminSubTab(sub) {
+        const ordersSec = document.getElementById("adminOrdersSection");
+        const productsSec = document.getElementById("adminProductsSection");
+        const btnOrd = document.getElementById("adminTabOrdersBtn");
+        const btnProd = document.getElementById("adminTabProductsBtn");
+
+        if (sub === "orders") {
+          ordersSec.classList.remove("hidden");
+          productsSec.classList.add("hidden");
+          btnOrd.className =
+            "py-3 px-6 text-sm font-bold border-b-2 border-brand-600 text-brand-600 dark:text-brand-400";
+          btnProd.className =
+            "py-3 px-6 text-sm font-bold border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800";
+        } else {
+          ordersSec.classList.add("hidden");
+          productsSec.classList.remove("hidden");
+          btnProd.className =
+            "py-3 px-6 text-sm font-bold border-b-2 border-brand-600 text-brand-600 dark:text-brand-400";
+          btnOrd.className =
+            "py-3 px-6 text-sm font-bold border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800";
+        }
+      }
+
+      function renderAdminOrders() {
+        const container = document.getElementById("adminOrdersList");
+        const noMsg = document.getElementById("noOrdersMsg");
+        const t = translations[currentLang];
+
+        if (orders.length === 0) {
+          container.innerHTML = "";
+          noMsg.classList.remove("hidden");
+          return;
+        }
+        noMsg.classList.add("hidden");
+
+        container.innerHTML = orders
+          .map(
+            (o) => `
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
+                        <div>
+                            <span class="font-bold text-brand-600 dark:text-brand-400 text-sm">#${o.id}</span>
+                            <span class="text-xs text-slate-400 ml-2">${o.date}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select onchange="updateOrderStatus('${o.id}', this.value)" class="text-xs px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 font-bold">
+                                <option value="Yangi" ${o.status === "Yangi" ? "selected" : ""}>Yangi / New</option>
+                                <option value="Bajarildi" ${o.status === "Bajarildi" ? "selected" : ""}>Bajarildi / Completed</option>
+                                <option value="Bekor qilindi" ${o.status === "Bekor qilindi" ? "selected" : ""}>Bekor / Canceled</option>
+                            </select>
+                            <button onclick="deleteOrder('${o.id}')" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash text-sm"></i></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <p class="text-slate-400 uppercase font-semibold mb-1">Mijoz / Client:</p>
+                            <p class="font-bold text-slate-800 dark:text-white text-sm">${o.customer}</p>
+                            <p class="text-slate-600 dark:text-slate-300">${o.phone}</p>
+                            <p class="text-slate-500 mt-1">${o.address}</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 uppercase font-semibold mb-1">Items:</p>
+                            <ul class="space-y-1">
+                                ${o.items.map((i) => `<li>• ${i.title} (${i.qty} x ${i.price.toLocaleString()}${t.currency})</li>`).join("")}
+                            </ul>
+                            <p class="font-bold text-sm text-brand-600 dark:text-brand-400 mt-2">Total: ${o.total.toLocaleString()} ${t.currency} (${o.payment})</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      function updateOrderStatus(id, status) {
+        const ord = orders.find((o) => o.id === id);
+        if (ord) {
+          ord.status = status;
+          localStorage.setItem("universal_orders", JSON.stringify(orders));
+          renderAdminPanel();
+        }
+      }
+
+      function deleteOrder(id) {
+        if (confirm("Delete?")) {
+          orders = orders.filter((o) => o.id !== id);
+          localStorage.setItem("universal_orders", JSON.stringify(orders));
+          renderAdminPanel();
+        }
+      }
+
+      function clearAllOrders() {
+        if (confirm("Clear all?")) {
+          orders = [];
+          localStorage.setItem("universal_orders", JSON.stringify(orders));
+          renderAdminPanel();
+        }
+      }
+
+      function renderAdminProducts() {
+        const table = document.getElementById("adminProductsTable");
+        const t = translations[currentLang];
+        table.innerHTML = products
+          .map(
+            (p) => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                    <td class="p-4 flex items-center gap-3">
+                        <img src="${p.image}" class="w-10 h-10 object-cover rounded-lg">
+                        <span class="font-bold text-slate-800 dark:text-white">${p.title}</span>
+                    </td>
+                    <td class="p-4">${p.category}</td>
+                    <td class="p-4 font-semibold">${p.price.toLocaleString()} ${t.currency}</td>
+                    <td class="p-4">${p.stock}</td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="openProductModal(${p.id})" class="text-blue-600 hover:text-blue-800 p-1"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteProduct(${p.id})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `,
+          )
+          .join("");
+      }
+
+      function openProductModal(id = null) {
+        document.getElementById("productModal").classList.remove("hidden");
+        const t = translations[currentLang];
+        if (id) {
+          document.getElementById("productModalTitle").innerText =
+            t.modal_edit_title;
+          const p = products.find((item) => item.id === id);
+          document.getElementById("prodEditId").value = p.id;
+          document.getElementById("prodTitle").value = p.title;
+          document.getElementById("prodPrice").value = p.price;
+          document.getElementById("prodStock").value = p.stock;
+          document.getElementById("prodCategory").value = p.category;
+          document.getElementById("prodImage").value = p.image;
+        } else {
+          document.getElementById("productModalTitle").innerText =
+            t.modal_add_title;
+          document.getElementById("prodEditId").value = "";
+          document.getElementById("prodTitle").value = "";
+          document.getElementById("prodPrice").value = "";
+          document.getElementById("prodStock").value = "";
+          document.getElementById("prodCategory").value = "";
+          document.getElementById("prodImage").value = "";
+        }
+      }
+
+      function closeProductModal() {
+        document.getElementById("productModal").classList.add("hidden");
+      }
+
+      function handleProductSubmit(e) {
+        e.preventDefault();
+        const editId = document.getElementById("prodEditId").value;
+        const title = document.getElementById("prodTitle").value.trim();
+        const price = parseFloat(document.getElementById("prodPrice").value);
+        const stock = parseInt(document.getElementById("prodStock").value);
+        const category = document.getElementById("prodCategory").value.trim();
+        const image =
+          document.getElementById("prodImage").value.trim() ||
+          "https://via.placeholder.com/300";
+
+        if (editId) {
+          const p = products.find((item) => item.id == editId);
+          if (p) {
+            p.title = title;
+            p.price = price;
+            p.stock = stock;
+            p.category = category;
+            p.image = image;
+          }
+        } else {
+          products.push({
+            id: Date.now(),
+            title,
+            price,
+            stock,
+            category,
+            image,
+          });
+        }
+
+        localStorage.setItem("universal_products", JSON.stringify(products));
+        closeProductModal();
+        renderAdminPanel();
+        renderCustomerApp();
+      }
+
+      function deleteProduct(id) {
+        if (confirm("Delete?")) {
+          products = products.filter((p) => p.id !== id);
+          localStorage.setItem("universal_products", JSON.stringify(products));
+          renderAdminPanel();
+          renderCustomerApp();
+        }
+      }
+
+      // Telegram Settings Modal
+      function openSettingsModal() {
+        document.getElementById("settingBotToken").value = telegramConfig.token;
+        document.getElementById("settingChatId").value = telegramConfig.chatId;
+        document.getElementById("settingsModal").classList.remove("hidden");
+      }
+
+      function closeSettingsModal() {
+        document.getElementById("settingsModal").classList.add("hidden");
+      }
+
+      function handleSettingsSave(e) {
+        e.preventDefault();
+        telegramConfig.token = document
+          .getElementById("settingBotToken")
+          .value.trim();
+        telegramConfig.chatId = document
+          .getElementById("settingChatId")
+          .value.trim();
+        localStorage.setItem(
+          "universal_telegram",
+          JSON.stringify(telegramConfig),
+        );
+        closeSettingsModal();
+        checkTelegramConfigAlert();
+      }
+
+      function checkTelegramConfigAlert() {
+        const alertBar = document.getElementById("botAlertBar");
+        const dot = document.getElementById("botStatusDot");
+        if (!telegramConfig.token || !telegramConfig.chatId) {
+          alertBar.classList.remove("hidden");
+          dot.className =
+            "absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-white dark:ring-slate-800";
+        } else {
+          alertBar.classList.add("hidden");
+          dot.className =
+            "absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-800";
+        }
+      }
+
+      // Dark Mode
+      function initDarkMode() {
+        if (
+          localStorage.getItem("universal_theme") === "dark" ||
+          (!("universal_theme" in localStorage) &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+          document.documentElement.classList.add("dark");
+          document.getElementById("themeIcon").className =
+            "fa-solid fa-sun text-lg";
+        } else {
+          document.documentElement.classList.remove("dark");
+          document.getElementById("themeIcon").className =
+            "fa-solid fa-moon text-lg";
+        }
+      }
+
+      function toggleDarkMode() {
+        if (document.documentElement.classList.contains("dark")) {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("universal_theme", "light");
+          document.getElementById("themeIcon").className =
+            "fa-solid fa-moon text-lg";
+        } else {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("universal_theme", "dark");
+          document.getElementById("themeIcon").className =
+            "fa-solid fa-sun text-lg";
+        }
+      }
+
+      function toggleMobileSearch() {
+        document.getElementById("mobileSearchBox").classList.toggle("hidden");
+      }
+    </script>
+  </body>
+</html>
